@@ -9,9 +9,9 @@ local GUI = {
 	{type = 'spinner', text = '', key = 'S_SOV', default = 75},
 	{type = 'checkbox', text = 'Enable Eye for an Eye', key = 'S_EFAEE', default = true},
 	{type = 'spinner', text = '', key = 'S_EFAE', default = 90},
-	--{type = 'checkbox', text = 'Enable Every Man for Himself (Stun)', key = 'S_EMFHSE', default = true},
-	--{type = 'checkbox', text = 'Enable Blessing of Freedom (Root)', key = 'S_BOFRE', default = true},
-	--{type = 'checkbox', text = 'Enable Blessing of Freedom (Snare)', key = 'S_BOFSE', default = true},
+	{type = 'checkbox', text = 'Enable Every Man for Himself (Stun)', key = 'S_EMFHSE', default = true},
+	{type = 'checkbox', text = 'Enable Blessing of Freedom (Root)', key = 'S_BOFRE', default = true},
+	{type = 'checkbox', text = 'Enable Blessing of Freedom (Snare)', key = 'S_BOFSE', default = true},
 	{type = 'checkbox', text = 'Enable Gift of the Naaru', key = 'S_GOTNE', default = true},
 	{type = 'spinner', text = '', key = 'S_GOTN', default = 40},
 	{type = 'checkbox', text = 'Enable Healthstone', key = 'S_HSE', default = true},
@@ -20,11 +20,15 @@ local GUI = {
 	{type = 'spinner', text = '', key = 'S_AHP', default = 20},
 	{type = 'ruler'},{type = 'spacer'},
 
-	-- GUI Emergency Group Healing
+	-- GUI Emergency Group Assist
 	{type = 'header', text = 'Emergency Group Healing', align = 'center'},
 	{type = 'checkbox', text = 'Enable Emergency Group Healing', key = 'E_FOLE', default = false},
 	{type = 'text', text = 'Flash of Light'},
 	{type = 'spinner', text = '', key = 'E_FOL', default = 35},
+	{type = 'text', text = 'Lay on Hands'},
+	{type = 'spinner', text = '', key = 'E_LOH', default = 10},
+	{type = 'text', text = 'Blessing of Protection'},
+	{type = 'spinner', text = '', key = 'E_BOP', default = 10},
 	{type = 'ruler'},{type = 'spacer'},
 
 	-- GUI Trinkets
@@ -32,6 +36,13 @@ local GUI = {
 	{type = 'text', text = 'Activate on-use trinkets on cooldown'},
 	{type = 'checkbox', text = 'Enable Top Trinket', key = 'trinket_1', default = false},
 	{type = 'checkbox', text = 'Enable Bottom Trinket', key = 'trinket_2', default = false},
+	{type = 'ruler'},{type = 'spacer'},
+	
+	-- Blessings player
+	{type = 'header', text = 'Blessings', align = 'center'},
+	{type = 'text', text = 'Activate to Bless Yourself'},
+	{type = 'checkbox', text = 'Kings', key = 'bkings', default = false},
+	{type = 'checkbox', text = 'Wisdom', key = 'bwisdom', default = false},
 	{type = 'ruler'},{type = 'spacer'},
 }
 
@@ -51,6 +62,14 @@ local exeOnLoad = function()
 		text = 'Enable/Disable: Automatic removal of Poison and Diseases.',
 		icon = 'Interface\\ICONS\\spell_holy_renew',
 	})
+	
+	NeP.Interface:AddToggle({
+		-- Group emergency support
+		key = 'yuPE',
+		name = 'Group Support',
+		text = 'Enable/Disable: Automatic Lay on Hands/Blessing of Protection.',
+		icon = 'Interface\\ICONS\\ability_fiegndead',
+	})
 end
 
 local Survival = {
@@ -61,11 +80,11 @@ local Survival = {
 	-- Eye for an Eye usage if enabled in UI.
 	{'Eye for an Eye', 'talent(5,2)&UI(S_EFAEE)&player.health<=UI(S_EFAE)'},
 	-- Every Man for Himself usage if enabled in UI.
-	--{'&Every Man for Himself', 'UI(S_EMFHSE)&player.state(stun)'},
+	{'&Every Man for Himself', 'UI(S_EMFHSE)&player.state(stun)'},
 	-- Blessing of Freedom usage if enabled in UI.
-	--{'!Blessing of Freedom', 'UI(S_BOFRE)&player.state(root)'},
+	{'!Blessing of Freedom', 'UI(S_BOFRE)&player.state(root)'},
 	-- Blessing of Freedom usage if enabled in UI.
-	--{'!Blessing of Freedom', 'UI(S_BOFSE)&player.state(snare)'},
+	{'!Blessing of Freedom', 'UI(S_BOFSE)&player.state(snare)'},
 	-- Gift of the Naaru usage if enabled in UI.
 	{'&Gift of the Naaru', 'UI(S_GOTNE)&{!player.debuff(Ignite Soul)}&player.health<=UI(S_GOTN)'},
 	-- Healthstone usage if enabled in UI.
@@ -82,6 +101,10 @@ local Player = {
 local Emergency = {
 	-- Flash of Light usage if enabled in UI.
 	{'!Flash of Light', 'UI(E_FOLE)&{!lowest.debuff(Ignite Soul)}&lowest.health<=UI(E_FOL)', 'lowest'},
+	-- Lay on Hands usage if enabled in UI.
+	{'!Lay on Hands', 'UI(E_FOLE)&{!lowest.debuff(Ignite Soul)}&lowest.health<=UI(E_LOH)', 'lowest'},
+	-- Blessing of Protection usage if enabled in UI.
+	{'!Blessing of Protection', 'UI(E_FOLE)&{!lowest.debuff(Ignite Soul)}&lowest.health<=UI(E_BOP)', 'lowest'},
 }
 
 local Trinkets = {
@@ -103,8 +126,8 @@ local Dispel = {
 }
 
 local Blessings = {
-	{'Greater Blessing of Wisdom', '!player.buff(Greater Blessing of Wisdom)', 'player'},
-	{'Greater Blessing of Kings', '!player.buff(Greater Blessing of Kings)', 'player'},
+	{'Greater Blessing of Wisdom', '!player.buff(Greater Blessing of Wisdom)&UI(bwisdom)', 'player'},
+	{'Greater Blessing of Kings', '!player.buff(Greater Blessing of Kings)&UI(bkings)', 'player'},
 }
 
 -- ####################################################################################
@@ -203,7 +226,7 @@ local inCombat = {
 	{Survival, '{!moving||moving}'},
 	{Blessings, '{!moving||moving}'},
 	{Player, '!moving&{!ingroup||ingroup}'},
-	{Emergency, '!moving&ingroup'},
+	{Emergency, '!moving&ingroup&toggle(yuPE)'},
 	{Trinkets, '{!moving||moving}'},
 	{Interrupts, '{!moving||moving}&toggle(interrupts)&target.interruptAt(70)&target.infront'},
 	{Cooldowns, '{!moving||moving}&toggle(cooldowns)'},
@@ -214,7 +237,7 @@ local outCombat = {
 	{Dispel, '{!moving||moving}&toggle(yuPS)&spell(Cleanse Toxins).cooldown=0'},
 	{Interrupts, '{!moving||moving}&toggle(interrupts)&target.interruptAt(70)&target.infront'},
 	{Blessings, '{!moving||moving}'},
-	{Emergency, '!moving&ingroup'},
+	{Emergency, '!moving&ingroup&toggle(yuPE)'},
 	{'Flash of Light', '!moving&player.health<=70', 'player'},
 }
 
