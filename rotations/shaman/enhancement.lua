@@ -25,13 +25,6 @@ local GUI = {
 	{type = 'checkbox', text = 'L-Control: Lightning Surge Totem @ Cursor', key = 'K_LST', default = true},
 	{type = 'checkbox', text = 'L-Alt: Earthbind Totem @ Cursor', key = 'K_ET', default = true},
 	{type = 'ruler'},{type = 'spacer'},
-
-	-- GUI Trinkets
-	{type = 'header', text = 'Trinkets', align = 'center'},
-	{type = 'text', text = 'Activate on-use trinkets on cooldown'},
-	{type = 'checkbox', text = 'Enable Top Trinket', key = 'trinket_1', default = false},
-	{type = 'checkbox', text = 'Enable Bottom Trinket', key = 'trinket_2', default = false},
-	{type = 'ruler'},{type = 'spacer'},
 }
 
 local exeOnLoad = function()
@@ -78,13 +71,6 @@ local Keybinds = {
 	{'!Lightning Surge Totem', 'UI(K_LST)&keybind(lcontrol)', 'cursor.ground'},
 	-- Earthbind Totem at cursor on Left-Alt if enabled in UI.
 	{'!Earthbind Totem', 'UI(K_ET)&keybind(lalt)', 'cursor.ground'},
-}
-
-local Trinkets = {
-	-- Top Trinket usage if enabled in UI.
-	{'#trinket1', 'UI(trinket_1)'},
-	-- Bottom Trinket usage if enabled in UI.
-	{'#trinket2', 'UI(trinket_2)'},
 }
 
 local Interrupts = {
@@ -182,7 +168,6 @@ local inCombat = {
 	{Survival, '{!moving||moving}'},
 	{Player, '!moving&{!ingroup||ingroup}'},
 	{Emergency, '!moving&ingroup'},
-	{Trinkets, '{!moving||moving}'},
 	{Interrupts, '{!moving||moving}&toggle(interrupts)&target.interruptAt(70)&target.infront&target.range<=30'},
 	{Cooldowns, '{!moving||moving}&toggle(cooldowns)'},
 	{Combat, 'target.infront&target.range<=8'},

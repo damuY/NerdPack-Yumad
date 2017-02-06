@@ -18,13 +18,6 @@ local GUI = {
 	{type = 'checkbox', text = 'L-Alt: Cloudburst Totem @ Cursor', key = 'K_CT', default = true},
 	{type = 'ruler'},{type = 'spacer'},
 
-	-- GUI Trinkets
-	{type = 'header', text = 'Trinkets', align = 'center'},
-	{type = 'text', text = 'Activate on-use trinkets on cooldown'},
-	{type = 'checkbox', text = 'Enable Top Trinket', key = 'trinket_1', default = false},
-	{type = 'checkbox', text = 'Enable Bottom Trinket', key = 'trinket_2', default = false},
-	{type = 'ruler'},{type = 'spacer'},
-
 	-- GUI Healing Stream Totem
 	{type = 'header', text = 'Healing Stream Totem', align = 'center'},
 	{type = 'checkbox', text = 'Enable Healing Stream Totem', key = 'To_HSTE', default = true},
@@ -146,13 +139,6 @@ local Keybinds = {
 	{'!Cloudburst Totem', 'UI(K_CT)&keybind(lalt)', 'cursor.ground'},
 }
 
-local Trinkets = {
-	-- Top Trinket usage if enabled in UI.
-	{'#trinket1', 'UI(trinket_1)'},
-	-- Bottom Trinket usage if enabled in UI.
-	{'#trinket2', 'UI(trinket_2)'},
-}
-
 local Totems = {
 	-- Healing Stream Totem usage if enabled in UI.
 	{'Healing Stream Totem', 'UI(To_HSTE)'},
@@ -216,7 +202,6 @@ local inCombat = {
 	{Survival, '{!moving||moving}'},
 	{Emergency},
 	{Totems, '{!moving||moving}'},
-	{Trinkets, '{!moving||moving}'},
 	{Tank, 'tank.exists&tank.health<100'},
 	{Lowest, 'lowest.health<100'},
 	{Player, 'player.health<100'},
