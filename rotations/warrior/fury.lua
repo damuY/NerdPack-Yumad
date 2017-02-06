@@ -18,13 +18,7 @@ local GUI = {
 	-- GUI Keybinds
 	{type = 'header', text = 'Keybinds', align = 'center'},
 	{type = 'checkbox', text = 'L-Shift: Heroic Leap @ Cursor', key = 'K_HL', default = true},
-	{type = 'ruler'},{type = 'spacer'},
-
-	-- GUI Trinkets
-	{type = 'header', text = 'Trinkets', align = 'center'},
-	{type = 'text', text = 'Activate on-use trinkets on cooldown'},
-	{type = 'checkbox', text = 'Enable Top Trinket', key = 'trinket_1', default = false},
-	{type = 'checkbox', text = 'Enable Bottom Trinket', key = 'trinket_2', default = false},
+	{type = 'checkbox', text = 'L-Alt: Shockwave', key = 'K_SW', default = true},
 	{type = 'ruler'},{type = 'spacer'},
 }
 
@@ -54,14 +48,9 @@ local Survival = {
 
 local Keybinds = {
 	-- Heroic Leap at cursor on Left-Shift if enabled in UI.
-	{'!Heroic Leap', 'UI(K_HL)&keybind(lshift)', 'cursor.ground'}
-}
-
-local Trinkets = {
-	-- Top Trinket usage if enabled in UI.
-	{'#trinket1', 'UI(trinket_1)'},
-	-- Bottom Trinket usage if enabled in UI.
-	{'#trinket2', 'UI(trinket_2)'},
+	{'!Heroic Leap', 'UI(K_HL)&keybind(lshift)', 'cursor.ground'},
+	-- Shockwave on Left-Alt if enabled in UI.
+	{'!Shockwave', 'talent(2,1)&UI(K_SW)&keybind(lalt)'},
 }
 
 local Interrupts = {
@@ -138,7 +127,7 @@ local AoE = {
 	--actions.aoe=bloodthirst,if=buff.enrage.down|rage<50
 	{'Bloodthirst', '!player.buff(Enrage)||player.rage<=50'},
 	--actions.aoe+=/bladestorm,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>1
-	{'Bladestorm', 'talent(7,1)'},
+	{'Bladestorm', 'talent(7,1)&player.area(8).enemies>1'},
 	--actions.aoe+=/whirlwind,if=buff.meat_cleaver.down
 	{'Whirlwind', '!player.buff(Meat Cleaver)'},
 	--actions.aoe+=/execute,if=spell_targets.whirlwind<6&talent.massacre.enabled&!buff.massacre.react
@@ -196,7 +185,7 @@ local ST ={
 	--actions.single_target+=/whirlwind,if=buff.wrecking_ball.react&buff.enrage.up
 	{'Whirlwind', 'talent(3,1)&player.buff(Wrecking Ball)&player.buff(Enrage)'},
 	--actions.single_target+=/bladestorm,if=buff.enrage.remains>2&(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>1)
-	{'Bladestorm', 'talent(7,1)&player.buff(Enrage).duration>2'},
+	{'Bladestorm', 'talent(7,1)&player.buff(Enrage).duration>2&player.area(8).enemies>1'},
 	--actions.single_target+=/bloodthirst
 	{'Bloodthirst'},
 	--actions.single_target+=/raging_blow,if=!set_bonus.tier19_2pc&!talent.inner_rage.enabled

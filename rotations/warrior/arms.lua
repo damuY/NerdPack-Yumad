@@ -20,13 +20,7 @@ local GUI = {
 	-- GUI Keybinds
 	{type = 'header', text = 'Keybinds', align = 'center'},
 	{type = 'checkbox', text = 'L-Shift: Heroic Leap @ Cursor', key = 'K_HL', default = true},
-	{type = 'ruler'},{type = 'spacer'},
-
-	-- GUI Trinkets
-	{type = 'header', text = 'Trinkets', align = 'center'},
-	{type = 'text', text = 'Activate on-use trinkets on cooldown'},
-	{type = 'checkbox', text = 'Enable Top Trinket', key = 'trinket_1', default = false},
-	{type = 'checkbox', text = 'Enable Bottom Trinket', key = 'trinket_2', default = false},
+	{type = 'checkbox', text = 'L-Alt: Shockwave', key = 'K_SW', default = true},
 	{type = 'ruler'},{type = 'spacer'},
 }
 
@@ -35,7 +29,7 @@ local exeOnLoad = function()
 	print('|cffc79c6e ----------------------------------------------------------------------|r')
 	print('|cffc79c6e --- |rWarrior: |cffc79c6eARMS|r')
 	print('|cffc79c6e --- |rTalents: 1/1 - 2/3 - 3/3 - 4/2 - 5/3 - 6/1 - 7/1|r')
-	print('|cffc79c6e --- |rTrinkets: Top=Draught of Souls|r')
+	print('|cffc79c6e --- |rMythic+: 1/3 - 2/1 - 3/3 - 4/2 - 5/3 - 6/1 - 7/1|r')
 	print('|cffc79c6e ----------------------------------------------------------------------|r')
 	print('|cffff0000 Configuration: |rRight-click the MasterToggle and go to Combat Routines Settings|r')
 end
@@ -59,14 +53,9 @@ local Survival = {
 
 local Keybinds = {
 	-- Heroic Leap at cursor on Left-Shift if enabled in UI.
-	{'!Heroic Leap', 'UI(K_HL)&keybind(lshift)', 'cursor.ground'}
-}
-
-local Trinkets = {
-	-- Top Trinket usage if enabled in UI.
-	{'#trinket1', 'UI(trinket_1)'},
-	-- Bottom Trinket usage if enabled in UI.
-	{'#trinket2', 'UI(trinket_2)'},
+	{'!Heroic Leap', 'UI(K_HL)&keybind(lshift)', 'cursor.ground'},
+	-- Shockwave on Left-Alt if enabled in UI.
+	{'!Shockwave', 'talent(2,1)&UI(K_SW)&keybind(lalt)'},
 }
 
 local Interrupts = {
@@ -75,13 +64,15 @@ local Interrupts = {
 }
 
 -- ####################################################################################
--- Primairly sourced from legion-dev SimC.
+-- Primairly sourced from legion-dev SimC with additions from The Arms Compendium.
 -- Updates to rotations from sources are considered for implementation.
 -- ####################################################################################
 
 -- SimC APL 1/28/2017
 -- https://github.com/simulationcraft/simc/blob/legion-dev/profiles/Tier19M/Warrior_Arms_T19M.simc
 -- https://github.com/simulationcraft/simc/blob/legion-dev/profiles/Tier19M_NH/Warrior_Arms_T19M_NH.simc
+-- The Arms Compendium 2/02/2017
+-- https://docs.google.com/document/d/1e2yNSETe1RrFPe5upmuhGxi1-nF3wFyJYHGcgMlir0Y/preview#
 
 local Cooldowns = {
 	--actions+=/blood_fury,if=buff.battle_cry.up|target.time_to_die<=16
@@ -89,7 +80,7 @@ local Cooldowns = {
 	--actions+=/berserking,if=buff.battle_cry.up|target.time_to_die<=11
 	{'&Berserking', 'player.buff(Battle Cry)'},
 	--actions+=/arcane_torrent,if=buff.battle_cry_deadly_calm.down&rage.deficit>40&cooldown.battle_cry.remains
-	{'&Arcane Torrent', '!player.buff(Battle Cry)&talent(6,1)&player.rage>=40&spell(Battle Cry).cooldown>gcd'},
+	{'&Arcane Torrent', 'talent(6,1)&!player.buff(Battle Cry)&player.rage>=40&spell(Battle Cry).cooldown>gcd'},
 	--actions+=/battle_cry,if=gcd.remains<0.25&cooldown.avatar.remains>=10&(buff.shattered_defenses.up|cooldown.warbreaker.remains>7&cooldown.colossus_smash.remains>7|cooldown.colossus_smash.remains&debuff.colossus_smash.remains>gcd)|target.time_to_die<=7
 	{'&Battle Cry', 'gcd.remains<0.25&spell(Avatar).cooldown>=10&{player.buff(Shattered Defenses)||spell(Warbreaker).cooldown>=7&spell(Colossus Smash).cooldown>=7||spell(Colossus Smash).cooldown>gcd&target.debuff(Colossus Smash).duration>gcd}'},
 	--actions+=/avatar,if=gcd.remains<0.25&(buff.battle_cry.up|cooldown.battle_cry.remains<15)|target.time_to_die<=20
@@ -97,20 +88,13 @@ local Cooldowns = {
 }
 
 local Available = {
-	{Cooldowns, 'toggle(cooldowns)'},
 	{'/startattack', '!isattacking'},
-	--actions+=/rend,if=remains<gcd
-	{'Rend', 'talent(3,2)&target.debuff(Rend).duration<gcd'},
 	--actions+=/focused_rage,if=buff.battle_cry_deadly_calm.remains>cooldown.focused_rage.remains&(buff.focused_rage.stack<3|cooldown.mortal_strike.remains)
-	{'&Focused Rage', 'player.buff(Battle Cry)&talent(6,1)&{player.buff(Focused Rage).count<3||spell(Mortal Strike).cooldown>gcd}'},
+	{'&Focused Rage', 'talent(6,1)&player.buff(Battle Cry)&{player.buff(Focused Rage).count<3||spell(Mortal Strike).cooldown>gcd}'},
 	--actions+=/colossus_smash,if=cooldown_react&debuff.colossus_smash.remains<gcd
 	{'Colossus Smash', 'target.debuff(Colossus Smash).duration<gcd'},
 	--actions+=/warbreaker,if=debuff.colossus_smash.remains<gcd
 	{'Warbreaker', 'target.debuff(Colossus Smash).duration<gcd'},
-	--actions+=/ravager
-	{'Ravager', 'talent(7,3)'},
-	--actions+=/overpower,if=buff.overpower.react
-	{'Overpower', 'talent(1,2)&player.buff(Overpower!)'},
 }
 
 local Cleave = {
@@ -124,49 +108,27 @@ local Cleave = {
 	--actions.cleave+=/warbreaker,if=buff.shattered_defenses.down
 	{'Warbreaker', '!player.buff(Shattered Defenses)'},
 	--actions.cleave+=/focused_rage,if=rage>100|buff.battle_cry_deadly_calm.up
-	{'&Focused Rage', 'player.rage>=100||player.buff(Battle Cry)&talent(6,1)'},
-	--actions.cleave+=/whirlwind,if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up|buff.cleave.up)
-	{'Whirlwind', 'talent(3,1)&{target.debuff(Colossus Smash)||player.rage<=50}&{!talent(5,3)||player.buff(Battle Cry)&talent(6,1)||player.buff(Cleave)}'},
-	--actions.cleave+=/rend,if=remains<=duration*0.3
-	{'Rend', 'talent(3,2)&target.debuff(Rend).duration<=4.5'},
+	{'&Focused Rage', 'player.rage>=100||talent(6,1)&player.buff(Battle Cry)'},
 	--actions.cleave+=/bladestorm
 	{'Bladestorm'},
 	--actions.cleave+=/cleave
 	{'Cleave'},
 	--actions.cleave+=/whirlwind,if=rage>40|buff.cleave.up
 	{'Whirlwind', 'player.rage>=40||player.buff(Cleave)'},
-	--actions.cleave+=/shockwave
-	{'Shockwave', 'talent(2,1)'},
-	--actions.cleave+=/storm_bolt
-	{'Storm Bolt', 'talent(2,2)'},
 }
 
 local AoE = {
 	{'/startattack', '!isattacking'},
-	--actions.aoe=mortal_strike,if=cooldown_react
-	{'Mortal Strike'},
 	--actions.aoe+=/execute,if=buff.stone_heart.react
 	{'Execute', 'player.buff(Ayala\'s Stone Heart)'},
-	--actions.aoe+=/colossus_smash,if=cooldown_react&buff.shattered_defenses.down&buff.precise_strikes.down
-	{'Colossus Smash', '!player.buff(Shattered Defenses)&!player.buff(Precise Strikes)'},
 	--actions.aoe+=/warbreaker,if=buff.shattered_defenses.down
 	{'Warbreaker', '!player.buff(Shattered Defenses)'},
-	--actions.aoe+=/whirlwind,if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up|buff.cleave.up)
-	{'Whirlwind', 'talent(3,1)&{target.debuff(Colossus Smash)||player.rage<=50}&{!talent(5,3)||player.buff(Battle Cry)&talent(6,1)||player.buff(Cleave)}'},
-	--actions.aoe+=/rend,if=remains<=duration*0.3
-	{'Rend', 'talent(3,2)&target.debuff(Rend).duration<=4.5'},
 	--actions.aoe+=/bladestorm
 	{'Bladestorm'},
 	--actions.aoe+=/cleave
 	{'Cleave'},
-	--actions.aoe+=/execute,if=rage>90
-	{'Execute', 'player.rage>=90'},
 	--actions.aoe+=/whirlwind,if=rage>=40
-	{'Whirlwind', 'player.rage>=40'},
-	--actions.aoe+=/shockwave
-	{'Shockwave', 'talent(2,1)'},
-	--actions.aoe+=/storm_bolt
-	{'Storm Bolt', 'talent(2,2)'},
+	{'Whirlwind', 'player.rage>=40||player.buff(Cleave)'},
 }
 
 local Execute = {
@@ -174,7 +136,7 @@ local Execute = {
 	--actions.execute=mortal_strike,if=cooldown_react&buff.battle_cry.up&buff.focused_rage.stack=3
 	{'Mortal Strike', 'player.buff(Battle Cry)&player.buff(Focused Rage).count=3'},
 	--actions.execute+=/execute,if=buff.battle_cry_deadly_calm.up
-	{'Execute', 'player.buff(Battle Cry)&talent(6,1)'},
+	{'Execute', 'talent(6,1)&player.buff(Battle Cry)'},
 	--actions.execute+=/colossus_smash,if=cooldown_react&buff.shattered_defenses.down
 	{'Colossus Smash', '!player.buff(Shattered Defenses)'},
 	--actions.execute+=/execute,if=buff.shattered_defenses.up&(rage>=17.6|buff.stone_heart.react)
@@ -183,33 +145,28 @@ local Execute = {
 	{'Mortal Strike', 'equipped(Archavon\'s Heavy Hand)&player.rage<=60||talent(5,1)&!player.buff(Shattered Defenses)'},
 	--actions.execute+=/execute,if=buff.shattered_defenses.down
 	{'Execute', '!player.buff(Shattered Defenses)'},
-	--actions.execute+=/bladestorm,interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets
-	{'Bladestorm'},
 }
 
 local ST = {
 	{'/startattack', '!isattacking'},
 	--actions.single=colossus_smash,if=cooldown_react&buff.shattered_defenses.down&(buff.battle_cry.down|buff.battle_cry.up&buff.battle_cry.remains>=gcd|buff.corrupted_blood_of_zakajz.remains>=gcd)
-	{'Colossus Smash', '!player.buff(Shattered Defenses)&{!player.buff(Battle Cry)||player.buff(Battle Cry)&player.buff(Battle Cry).duration>=gcd||player.buff(Corrupted Blood of Zakajz).duration>=gcd}'},
+	{'Colossus Smash', '!player.buff(Shattered Defenses)&{!player.buff(Battle Cry)||player.buff(Battle Cry).duration>=gcd||player.buff(Corrupted Blood of Zakajz).duration>=gcd}'},
 	--actions.single+=/focused_rage,if=!buff.battle_cry_deadly_calm.up&buff.focused_rage.stack<3&!cooldown.colossus_smash.up&(rage>=50|debuff.colossus_smash.down|cooldown.battle_cry.remains<=8)|cooldown.battle_cry.remains<=8&cooldown.battle_cry.remains>0&rage>100
-	{'&Focused Rage', '!player.buff(Battle Cry)&talent(6,1)&player.buff(Focused Rage).count<3&spell(Colossus Smash).cooldown>gcd&{player.rage>=50||!target.debuff(Colossus Smash)||spell(Battle Cry).cooldown<=8}||spell(Battle Cry).cooldown<=8&spell(Battle Cry).cooldown>0&player.rage>=100'},
+	{'&Focused Rage', 'talent(6,1)&!player.buff(Battle Cry)&player.buff(Focused Rage).count<3&spell(Colossus Smash).cooldown>gcd&{player.rage>=50||!target.debuff(Colossus Smash)||spell(Battle Cry).cooldown<=8}||spell(Battle Cry).cooldown<=8&spell(Battle Cry).cooldown>0&player.rage>=100'},
 	--actions.single+=/mortal_strike,if=cooldown.battle_cry.remains>8|!buff.battle_cry.up&buff.focused_rage.stack<3|buff.battle_cry.remains<=gcd
 	{'Mortal Strike', 'spell(Battle Cry).cooldown>=8||!player.buff(Battle Cry)&player.buff(Focused Rage).count<3||player.buff(Battle Cry).duration<=gcd'},
 	--actions.single+=/execute,if=buff.stone_heart.react
 	{'Execute', 'player.buff(Ayala\'s Stone Heart)'},
-	--actions.single+=/whirlwind,if=spell_targets.whirlwind>1|talent.fervor_of_battle.enabled
-	{'Whirlwind', 'player.area(8).enemies>1||talent(3,1)&player.rage>=40'},
 	--actions.single+=/slam,if=spell_targets.whirlwind=1&!talent.fervor_of_battle.enabled
-	{'Slam', '!talent(3,1)&player.rage>=32'},
-	--actions.single+=/bladestorm,interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets
-	{'Bladestorm'},
+	{'Slam', 'player.rage>=32'},
 }
 
 local inCombat = {
 	{Keybinds, '{!moving||moving}'},
 	{Survival, '{!moving||moving}'},
 	{Interrupts, '{!moving||moving}&toggle(interrupts)&target.interruptAt(70)&target.infront'},
-	{Available, '{!moving||moving}&target.range<=8'},
+	{Cooldowns, '{!moving||moving}&toggle(cooldowns)&target.range<=8'},
+	{Available, '{!moving||moving}&!toggle(aoe)&target.range<=8'},
 	{Cleave, '{!moving||moving}&toggle(aoe)&player.area(8).enemies>=2&talent(1,3)'},
 	{AoE, '{!moving||moving}&toggle(aoe)&player.area(8).enemies>=5&!talent(1,3)'},
 	{Execute, '{!moving||moving}&target.range<=8&target.infront&target.health<=20&player.area(8).enemies<5'},
