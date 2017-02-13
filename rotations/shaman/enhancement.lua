@@ -92,8 +92,8 @@ local Dispel = {
 local Cooldowns = {
 	{'Ascendance','talent(7,1)&player.buff(Stormbringer)'},
 	{'Feral Spirit','!artifact(Alpha Wolf).enabled||player.maelstrom>=20&spell(Crash Lightning).cooldown<=gcd'},
-	{'&Blood Fury', 'lastcast(Feral Spirit)'},
-	{'&Berserking', 'player.buff(Ascendance)||!talent(7,1)&lastcast(Feral Spirit)'},
+	{'&Blood Fury', 'spell(Feral Spirit).cooldown>1'},
+	{'&Berserking', 'player.buff(Ascendance)||!talent(7,1)&spell(Feral Spirit).cooldown>1'},
 }
 
 local Combat = {
