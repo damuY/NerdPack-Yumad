@@ -20,11 +20,22 @@ local GUI = {
 	{type = 'spinner', text = '', key = 'S_AHP', default = 20},
 	{type = 'ruler'},{type = 'spacer'},
 
-	-- GUI Emergency Group Healing
-	{type = 'header', text = 'Emergency Group Healing', align = 'center'},
-	{type = 'checkbox', text = 'Enable Emergency Group Healing', key = 'E_FOLE', default = false},
+	-- GUI Emergency Group Assistance
+	{type = 'header', text = 'Emergency Group Assistance', align = 'center'},
+	{type = 'checkbox', text = 'Enable Emergency Group Assistance', key = 'E_GAE', default = false},
 	{type = 'text', text = 'Flash of Light'},
 	{type = 'spinner', text = '', key = 'E_FOL', default = 35},
+	{type = 'text', text = 'Lay on Hands'},
+	{type = 'spinner', text = '', key = 'E_LOH', default = 10},
+	{type = 'text', text = 'Blessing of Protection'},
+	{type = 'spinner', text = '', key = 'E_BOP', default = 10},
+	{type = 'ruler'},{type = 'spacer'},
+
+	-- GUI Blessings
+	{type = 'header', text = 'Blessings', align = 'center'},
+	{type = 'text', text = 'Check to enable blessings on yourself'},
+	{type = 'checkbox', text = 'Blessing of Kings', key = 'B_BOKP', default = false},
+	{type = 'checkbox', text = 'Blessing of Wisdom', key = 'B_BOWP', default = false},
 	{type = 'ruler'},{type = 'spacer'},
 }
 
@@ -39,10 +50,17 @@ local exeOnLoad = function()
 
 	NeP.Interface:AddToggle({
 		-- Cleanse Toxin
-		key = 'yuPS',
+		key = 'yuCT',
 		name = 'Cleanse Toxin',
-		text = 'Enable/Disable: Automatic removal of Poison and Diseases.',
+		text = 'Enable/Disable: Automatic removal of Poison and Diseases',
 		icon = 'Interface\\ICONS\\spell_holy_renew',
+	})
+	NeP.Interface:AddToggle({
+		-- Emergency Group Assistance
+		key = 'yuEGA',
+		name = 'Emergency Group Assistance',
+		text = 'Enable/Disable: Automatic LoH/BoP/FoL on group members',
+		icon = 'Interface\\ICONS\\ability_fiegndead',
 	})
 end
 
@@ -74,7 +92,11 @@ local Player = {
 
 local Emergency = {
 	-- Flash of Light usage if enabled in UI.
-	{'!Flash of Light', 'UI(E_FOLE)&{!lowest.debuff(Ignite Soul)}&lowest.health<=UI(E_FOL)', 'lowest'},
+	{'!Flash of Light', 'UI(E_GAE)&{!lowest.debuff(Ignite Soul)}&lowest.health<=UI(E_FOL)', 'lowest'},
+	-- Lay on Hands usage if enabled in UI.
+	{'!Lay on Hands', 'UI(E_GAE)&{!lowest.debuff(Ignite Soul)}&lowest.health<=UI(E_LOH)', 'lowest'},
+	-- Blessing of Protection usage if enabled in UI.
+	{'!Blessing of Protection', 'UI(E_GAE)&{!lowest.debuff(Ignite Soul)}&lowest.health<=UI(E_BOP)', 'lowest'},
 }
 
 local Interrupts = {
@@ -89,8 +111,8 @@ local Dispel = {
 }
 
 local Blessings = {
-	{'Greater Blessing of Wisdom', '!player.buff(Greater Blessing of Wisdom)', 'player'},
-	{'Greater Blessing of Kings', '!player.buff(Greater Blessing of Kings)', 'player'},
+	{'Greater Blessing of Kings', 'UI(B_BOKP)&!player.buff(Greater Blessing of Kings)', 'player'},
+	{'Greater Blessing of Wisdom', 'UI(B_BOWP)&!player.buff(Greater Blessing of Wisdom)', 'player'},
 }
 
 -- ####################################################################################
@@ -185,21 +207,21 @@ local Combat = {
 }
 
 local inCombat = {
-	{Dispel, '{!moving||moving}&toggle(yuPS)&spell(Cleanse Toxins).cooldown=0'},
+	{Dispel, '{!moving||moving}&toggle(yuCT)&spell(Cleanse Toxins).cooldown=0'},
 	{Survival, '{!moving||moving}'},
 	{Blessings, '{!moving||moving}'},
 	{Player, '!moving&{!ingroup||ingroup}'},
-	{Emergency, '!moving&ingroup'},
+	{Emergency, '!moving&ingroup&toggle(yuEGA)'},
 	{Interrupts, '{!moving||moving}&toggle(interrupts)&target.interruptAt(70)&target.infront'},
 	{Cooldowns, '{!moving||moving}&toggle(cooldowns)'},
 	{Combat, '{!moving||moving}&target.infront&target.range<=8'},
 }
 
 local outCombat = {
-	{Dispel, '{!moving||moving}&toggle(yuPS)&spell(Cleanse Toxins).cooldown=0'},
+	{Dispel, '{!moving||moving}&toggle(yuCT)&spell(Cleanse Toxins).cooldown=0'},
 	{Interrupts, '{!moving||moving}&toggle(interrupts)&target.interruptAt(70)&target.infront'},
 	{Blessings, '{!moving||moving}'},
-	{Emergency, '!moving&ingroup'},
+	{Emergency, '!moving&ingroup&toggle(yuEGA)'},
 	{'Flash of Light', '!moving&player.health<=70', 'player'},
 }
 
