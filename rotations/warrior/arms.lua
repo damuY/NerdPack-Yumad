@@ -68,9 +68,8 @@ local Interrupts = {
 -- Updates to rotations from sources are considered for implementation.
 -- ####################################################################################
 
--- SimC APL 1/28/2017
+-- SimC APL 4/20/2017
 -- https://github.com/simulationcraft/simc/blob/legion-dev/profiles/Tier19M/Warrior_Arms_T19M.simc
--- https://github.com/simulationcraft/simc/blob/legion-dev/profiles/Tier19M_NH/Warrior_Arms_T19M_NH.simc
 -- The Arms Compendium 2/02/2017
 -- https://docs.google.com/document/d/1e2yNSETe1RrFPe5upmuhGxi1-nF3wFyJYHGcgMlir0Y/preview#
 

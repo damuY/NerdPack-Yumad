@@ -86,14 +86,14 @@ local Dispel = {
 -- Updates to rotations from sources are considered for implementation.
 -- ####################################################################################
 
--- SimC APL 1/10/2017
+-- SimC APL 4/20/2017
 -- https://github.com/simulationcraft/simc/blob/legion-dev/profiles/Tier19M/Shaman_Enhancement_T19M.simc
 
 local Cooldowns = {
 	{'Ascendance','talent(7,1)&player.buff(Stormbringer)'},
 	{'Feral Spirit','!artifact(Alpha Wolf).enabled||player.maelstrom>=20&spell(Crash Lightning).cooldown<=gcd'},
-	{'&Blood Fury', 'spell(Feral Spirit).cooldown>1'},
-	{'&Berserking', 'player.buff(Ascendance)||!talent(7,1)&spell(Feral Spirit).cooldown>1'},
+	{'&Blood Fury', 'player.buff(Ascendance)||spell(Feral Spirit).cooldown>1'},
+	{'&Berserking', 'player.buff(Ascendance)||spell(Feral Spirit).cooldown>1'},
 }
 
 local Combat = {
@@ -108,8 +108,8 @@ local Combat = {
 	{'Rockbiter', 'talent(7,2)&player.buff(Landslide).remains<gcd'},
 	--actions+=/fury_of_air,if=!ticking&maelstrom>22
 	{'Fury of Air', 'talent(6,2)&!player.buff(Fury of Air)&player.maelstrom>22'},
-	--actions+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<gcd
-	{'Frostbrand', 'talent(4,3)&player.buff(Frostbrand).remains<gcd'},
+	--actions+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<gcd&((!talent.fury_of_air.enabled)|(talent.fury_of_air.enabled&maelstrom>25))
+	{'Frostbrand', 'talent(4,3)&player.buff(Frostbrand).remains<gcd&{!talent(6,2)||talent(6,2)&player.maelstrom>25}'},
 	--actions+=/flametongue,if=buff.flametongue.remains<gcd|(cooldown.doom_winds.remains<6&buff.flametongue.remains<4)
 	{'Flametongue', 'player.buff(Flametongue).remains<gcd||{spell(Doom Winds).cooldown<6&player.buff(Flametongue).remains<4}'},
 	--actions+=/doom_winds
@@ -128,12 +128,20 @@ local Combat = {
 	{'Windstrike', 'talent(7,1)&player.buff(Ascendance)&player.buff(Stormbringer)&{{talent(6,2)&player.maelstrom>=26}||{!talent(6,2)}}'},
 	--actions+=/stormstrike,if=buff.stormbringer.react&((talent.fury_of_air.enabled&maelstrom>=26)|(!talent.fury_of_air.enabled))
 	{'Stormstrike', 'player.buff(Stormbringer)&{{talent(6,2)&player.maelstrom>=26}||{!talent(6,2)}}'},
+	--actions+=/frostbrand,if=equipped.137084&talent.hot_hand.enabled&buff.hot_hand.react&!buff.frostbrand.up&((!talent.fury_of_air.enabled)|(talent.fury_of_air.enabled&maelstrom>25))
+	{'Frostbrand', 'equipped(Akainu\'s Absolute Justice)&talent(1,2)&player.buff(Hot Hand)&!player.buff(Frostbrand)&{!talent(6,2)||talent(6,2)&player.maelstrom>25}'},
 	--actions+=/lava_lash,if=talent.hot_hand.enabled&buff.hot_hand.react
 	{'Lava Lash', 'talent(1,2)&player.buff(Hot Hand)'},
+	--actions+=/sundering,if=active_enemies>=3
+	{'Sundering', 'talent(6,3)&player.area(8).enemies>=3'},
 	--actions+=/crash_lightning,if=active_enemies>=4
 	{'Crash Lightning', 'player.area(8).enemies>=4'},
-	--actions+=/windstrike
-	{'Windstrike', 'talent(7,1)&player.buff(Ascendance)'},
+	--actions+=/windstrike,if=talent.overcharge.enabled&cooldown.lightning_bolt.remains<gcd&maelstrom>80
+	{'Windstrike', 'talent(5,2)&spell(Lightning Bolt).cooldown<gcd&player.maelstrom>80'},
+	--actions+=/windstrike,if=talent.fury_of_air.enabled&maelstrom>46&(cooldown.lightning_bolt.remains>gcd|!talent.overcharge.enabled)
+	{'Windstrike', 'talent(6,2)&player.maelstrom>46&{spell(Lightning Bolt).cooldown>gcd||!talent(5,2)}'},
+	--actions+=/windstrike,if=!talent.overcharge.enabled&!talent.fury_of_air.enabled
+	{'Windstrike', '!talent(5,2)&!talent(6,2)'},
 	--actions+=/stormstrike,if=talent.overcharge.enabled&cooldown.lightning_bolt.remains<gcd&maelstrom>80
 	{'Stormstrike', 'talent(5,2)&spell(Lightning Bolt).cooldown<gcd&player.maelstrom>80'},
 	--actions+=/stormstrike,if=talent.fury_of_air.enabled&maelstrom>46&(cooldown.lightning_bolt.remains>gcd|!talent.overcharge.enabled)
@@ -142,8 +150,12 @@ local Combat = {
 	{'Stormstrike', '!talent(5,2)&!talent(6,2)'},
 	--actions+=/crash_lightning,if=((active_enemies>1|talent.crashing_storm.enabled|talent.boulderfist.enabled)&!set_bonus.tier19_4pc)|feral_spirit.remains>5
 	{'Crash Lightning', '{player.area(8).enemies>1||talent(6,1)||talent(1,3)}&!set_bonus(T19)>=4||spell(Feral Spirit).cooldown>110'},
-	--actions+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8
-	{'Frostbrand', 'talent(4,3)&player.buff(Frostbrand).remains<4.8'},
+	--actions+=/crash_lightning,if=active_enemies>=3
+	{'Crash Lightning', 'player.area(8).enemies>=3'},
+	--actions+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8&((!talent.fury_of_air.enabled)|(talent.fury_of_air.enabled&maelstrom>25))
+	{'Frostbrand', 'talent(4,3)&player.buff(Frostbrand).remains<4.8&{!talent(6,2)||talent(6,2)&player.maelstrom>25}'},
+	--actions+=/frostbrand,if=equipped.137084&!buff.frostbrand.up&((!talent.fury_of_air.enabled)|(talent.fury_of_air.enabled&maelstrom>25))
+	{'Frostbrand', 'equipped(Akainu\'s Absolute Justice)&!player.buff(Frostbrand)&{!talent(6,2)||talent(6,2)&player.maelstrom>25}'},
 	--actions+=/lava_lash,if=talent.fury_of_air.enabled&talent.overcharge.enabled&(set_bonus.tier19_4pc&maelstrom>=80)
 	{'Lava Lash', 'talent(6,2)&talent(5,2)&{set_bonus(T19)>=4&player.maelstrom>=80}'},
 	--actions+=/lava_lash,if=talent.fury_of_air.enabled&!talent.overcharge.enabled&(set_bonus.tier19_4pc&maelstrom>=53)
@@ -152,8 +164,6 @@ local Combat = {
 	{'Lava Lash', '!set_bonus(T19)>=4&player.maelstrom>=120||{!talent(6,2)&set_bonus(T19)>=4&player.maelstrom>=40}'},
 	--actions+=/flametongue,if=buff.flametongue.remains<4.8
 	{'Flametongue', 'player.buff(Flametongue).remains<4.8'},
-	--actions+=/sundering
-	{'Sundering', 'talent(6,3)'},
 	--actions+=/rockbiter
 	{'Rockbiter'},
 	--actions+=/flametongue

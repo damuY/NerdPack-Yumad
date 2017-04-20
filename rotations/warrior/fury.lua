@@ -63,9 +63,8 @@ local Interrupts = {
 -- Updates to rotations from sources are considered for implementation.
 -- ####################################################################################
 
--- SimC APL 2/5/2017
+-- SimC APL 4/20/2017
 -- https://github.com/simulationcraft/simc/blob/legion-dev/profiles/Tier19M/Warrior_Fury_T19M.simc
--- https://github.com/simulationcraft/simc/blob/legion-dev/profiles/Tier19M_NH/Warrior_Fury_T19M_NH.simc
 
 local Cooldowns = {
 	--actions+=/battle_cry,if=gcd.remains=0&(!talent.reckless_abandon.enabled&(cooldown.bloodthirst.remains=0|buff.enrage.remains>cooldown.bloodthirst.remains))|(talent.reckless_abandon.enabled&(talent.dragon_roar.enabled&buff.dragon_roar.up|!talent.dragon_roar.enabled))

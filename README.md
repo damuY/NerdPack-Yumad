@@ -4,16 +4,16 @@ I'm not good at this ```lua``` stuff, but this is me learning.
 
 Supported Combat Rotations:
 
- * Shaman - Restoration: 7.1.0 Will update soon. Currently requires an Advanced unlocker.
+ * Shaman - Restoration: 7.1.0 - Should work in 7.2 and requires an Advanced unlocker.
  
- * Shaman - Elemental: 7.1.5 Lightning Rod, Icefury, and Ascendance rotations from SimC and stormearthandlava.
+ * Shaman - Elemental: 7.2 - Lightning Rod, Icefury, and Ascendance rotations from SimC and Storm, Earth, and Lava.
  
- * Shaman - Enhancement: 7.1.5 from SimC.
+ * Shaman - Enhancement: 7.2 - SimC.
  
- * Paladin - Retribution: 7.1.5 from SimC.
+ * Paladin - Retribution: 7.2 - SimC.
  
- * Warrior - Arms: 7.1.5 from SimC.
+ * Warrior - Arms: 7.2 - SimC and The Arms Compendium (2/02/2017).
  
- * Warrior - Fury: 7.1.5 from SimC.
+ * Warrior - Fury: 7.2 - SimC.
  
- * Warlock - Demonology: 7.1.5 from SimC.
+ * Warlock - Demonology: 7.1.5 - SimC.
