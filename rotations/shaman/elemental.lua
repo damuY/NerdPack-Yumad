@@ -192,6 +192,7 @@ local IFSingle = {
 	--actions.single_if+=/frost_shock,if=buff.icefury.up&maelstrom>=111
 	--added Swelling Maelstrom check
 	{'Frost Shock', 'player.buff(Icefury)&{player.maelstrom>=111||!artifact(Swelling Maelstrom).enabled&player.maelstrom>=86}'},
+	{'Frost Shock', 'player.buff(Icefury)&player.maelstrom>=86'},
 	--actions.single_if+=/elemental_blast
 	{'Elemental Blast', 'talent(5,3)'},
 	--actions.single_if+=/earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
@@ -203,11 +204,13 @@ local IFSingle = {
 	--actions.single_if+=/icefury,if=raid_event.movement.in<5|maelstrom<=101
 	--added Swelling Maelstrom and Stormkeeper checks
 	{'Icefury', '!player.buff(Stormkeeper)&{player.maelstrom>=101||!artifact(Swelling Maelstrom).enabled&player.maelstrom>=76}'},
+	{'Icefury', '!player.buff(Stormkeeper)&player.maelstrom>=76'},
 	--actions.single_if+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3
 	{'Lightning Bolt', 'player.buff(Power of the Maelstrom)&player.buff(Stormkeeper)'},
 	--actions.single_if+=/lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react
 	--added Lava Surge, Swelling Maelstrom, and Lava Burst count=2 checks
 	{'Lava Burst', '{!moving||moving}&{player.buff(Lava Surge)||target.debuff(Flame Shock).duration>spell(Lava Burst).casttime&{spell(Lava Burst).cooldown=0&{player.maelstrom<=113||!artifact(Swelling Maelstrom).enabled&player.maelstrom<=88||spell(Lava Burst).charges<=2}}}'},
+	{'Lava Burst', '{!moving||moving}&{player.buff(Lava Surge)||target.debuff(Flame Shock).duration>spell(Lava Burst).casttime&{spell(Lava Burst).cooldown=0&player.maelstrom<=88||spell(Lava Burst).charges<=2}}'},
 	--actions.single_if+=/frost_shock,if=buff.icefury.up&((maelstrom>=20&raid_event.movement.in>buff.icefury.remains)|buff.icefury.remains<(1.5*spell_haste*buff.icefury.stack+1))
 	--added lastcast check for Icefury
 	{'Frost Shock', '{!moving||moving}&player.buff(Icefury)&{lastcast(Icefury)||player.maelstrom>=20||player.buff(Icefury).duration<{1.5*{spell_haste}*player.buff(Icefury).count+1}}'},
