@@ -148,6 +148,7 @@ local LRSingle = {
 	{'Elemental Blast', 'talent(5,3)'},
 	--actions.single_lr+=/earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
 	{'Earth Shock', '{!moving||moving}&{player.maelstrom>=117||!artifact(Swelling Maelstrom).enabled&player.maelstrom>=92}'},
+	{'Earth Shock', '{!moving||moving}&player.maelstrom>=92'},
 	--actions.single_lr+=/stormkeeper,if=raid_event.adds.count<3|raid_event.adds.in>50
 	{'Stormkeeper'},
 	--actions.single_lr+=/lava_burst,if=dot.flame_shock.remains>cast_time&cooldown_react
@@ -157,6 +158,7 @@ local LRSingle = {
 	{'Flame Shock', '{!moving||moving}&player.maelstrom>=20&player.buff(Elemental Focus)&target.debuff(Flame Shock).duration<9'},
 	--actions.single_lr+=/earth_shock,if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86
 	{'Earth Shock', '{!moving||moving}&{player.maelstrom>=111||!artifact(Swelling Maelstrom).enabled&player.maelstrom>=86}'},
+	{'Earth Shock', '{!moving||moving}&player.maelstrom>=86'},
 	--actions.single_lr+=/earthquake,if=buff.echoes_of_the_great_sundering.up
 	{'Earthquake', '{!moving||moving}&player.buff(Echoes of the Great Sundering)&!advanced', 'cursor.ground'},
 	{'Earthquake', '{!moving||moving}&player.buff(Echoes of the Great Sundering)&advanced', 'target.ground'},
@@ -194,6 +196,7 @@ local IFSingle = {
 	{'Elemental Blast', 'talent(5,3)'},
 	--actions.single_if+=/earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
 	{'Earth Shock', '{!moving||moving}&{player.maelstrom>=117||!artifact(Swelling Maelstrom).enabled&player.maelstrom>=92}'},
+	{'Earth Shock', '{!moving||moving}&player.maelstrom>=92'},
 	--actions.single_if+=/stormkeeper,if=raid_event.adds.count<3|raid_event.adds.in>50
 	--added Icefury check
 	{'Stormkeeper', '!player.buff(Icefury)'},
@@ -214,6 +217,7 @@ local IFSingle = {
 	{'Frost Shock', '{!moving||moving}&player.buff(Icefury)'},
 	--actions.single_if+=/earth_shock,if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86
 	{'Earth Shock', '{!moving||moving}&{player.maelstrom>=111||!artifact(Swelling Maelstrom).enabled&player.maelstrom>=86}'},
+	{'Earth Shock', '{!moving||moving}&player.maelstrom>=86'},
 	--actions.single_if+=/earthquake,if=buff.echoes_of_the_great_sundering.up
 	{'Earthquake', '{!moving||moving}&player.buff(Echoes of the Great Sundering)&!advanced', 'cursor.ground'},
 	{'Earthquake', '{!moving||moving}&player.buff(Echoes of the Great Sundering)&advanced', 'target.ground'},
@@ -245,6 +249,7 @@ local ASSingle = {
 	--actions.single_asc+=/earth_shock,if=maelstrom>=117|!artifact.swelling_maelstrom.enabled&maelstrom>=92
 	--added Ascendance check
 	{'Earth Shock', '{!moving||moving}&{player.maelstrom>=117||!player.buff(Ascendance)&!artifact(Swelling Maelstrom).enabled&player.maelstrom>=92}'},
+	{'Earth Shock', '{!moving||moving}&!player.buff(Ascendance)&player.maelstrom>=92'},
 	--actions.single_asc+=/stormkeeper,if=raid_event.adds.count<3|raid_event.adds.in>50
 	{'Stormkeeper', '!player.buff(Ascendance)'},
 	--actions.single_asc+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&buff.stormkeeper.up&spell_targets.chain_lightning<3
@@ -259,6 +264,7 @@ local ASSingle = {
 	--actions.single_asc+=/earth_shock,if=maelstrom>=111|!artifact.swelling_maelstrom.enabled&maelstrom>=86
 	--added Ascendance check
 	{'Earth Shock', '{!moving||moving}&{player.maelstrom>=111||!player.buff(Ascendance)&!artifact(Swelling Maelstrom).enabled&player.maelstrom>=86}'},
+	{'Earth Shock', '{!moving||moving}&!player.buff(Ascendance)&player.maelstrom>=86'},
 	--actions.single_asc+=/earthquake,if=buff.echoes_of_the_great_sundering.up
 	{'Earthquake', '{!moving||moving}&player.buff(Echoes of the Great Sundering)&!player.buff(Ascendance)&!advanced', 'cursor.ground'},
 	{'Earthquake', '{!moving||moving}&player.buff(Echoes of the Great Sundering)&!player.buff(Ascendance)&advanced', 'target.ground'},
